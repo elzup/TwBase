@@ -6,6 +6,10 @@
 #  tweet_id   :string
 #  text       :string
 #  user_id    :integer
+#  lat        :float
+#  long       :float
+#  for_sq     :boolean
+#  keyword    :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

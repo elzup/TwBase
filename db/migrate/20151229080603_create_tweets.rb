@@ -4,6 +4,10 @@ class CreateTweets < ActiveRecord::Migration
       t.string :tweet_id
       t.string :text
       t.integer :user_id
+      t.float :lat
+      t.float :long
+      t.boolean :for_sq
+      t.string :keyword
 
       t.timestamps null: false
     end

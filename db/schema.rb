@@ -17,6 +17,10 @@ ActiveRecord::Schema.define(version: 20151229080603) do
     t.string   "tweet_id"
     t.string   "text"
     t.integer  "user_id"
+    t.float    "lat"
+    t.float    "long"
+    t.boolean  "for_sq"
+    t.string   "keyword"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
