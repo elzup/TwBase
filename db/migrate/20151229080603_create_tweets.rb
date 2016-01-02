@@ -16,6 +16,7 @@ class CreateTweets < ActiveRecord::Migration
     end
 
     add_index :tweets, :user_id
+    add_index :tweets, :tweet_id
     add_index :tweets, :created_at
     add_index :tweets, :tweeted_at
   end

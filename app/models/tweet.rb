@@ -24,4 +24,8 @@
 
 class Tweet < ActiveRecord::Base
   belongs_to :user
+
+  def self.oldest_tweet
+    Tweet.order(:tweeted_at).first
+  end
 end

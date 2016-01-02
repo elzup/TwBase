@@ -9,9 +9,10 @@ namespace :collector do
   task search_going: :environment do
     q = '行く OR 向かう'
     client = InfTwitterClient.new
-    res = client.dig_search(q)
+    old_tw = Tweet.where(:search_word => q).order(:tweeted_at).first
+    res = client.dig_search(q, old_tw).take(10000)
     puts "#{client.rate_limit_search_s} >>"
-    res.take(10).each_with_index do |tw, i|
+    res.each_with_index do |tw, i|
       # regist user
       user = User.find_or_create_by(
           tid: tw.user.id,
@@ -29,6 +30,7 @@ namespace :collector do
         puts "#{i}: #{tw.created_at}"
       end
     end
+    puts "get #{res.count} tweet"
     puts ">> #{client.rate_limit_search_s}"
   end
 
