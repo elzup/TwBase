@@ -21,7 +21,22 @@ class InfTwitterClient
     end
   end
 
+  def dig_refresh
+  end
+
   ### request method ###
+  def dig_search(q)
+    reload_client
+    # RT排除
+    res = @client.search(
+        q,
+        exclude: 'retweets',
+        result_type: 'recent',
+        count: 100,
+    )
+    res.take(18000)
+  end
+
   def rate_limit_search
     res = Twitter::REST::Request.new(@client, :get, '/1.1/application/rate_limit_status.json').perform
     res[:resources][:search][:'/search/tweets']
@@ -30,7 +45,7 @@ class InfTwitterClient
   private
   def print_client_info
     unless @client.user_token?
-      puts 'Faild'
+      puts 'Failed'
       return
     end
     search_limit = rate_limit_search
