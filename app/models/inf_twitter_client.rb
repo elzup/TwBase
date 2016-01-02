@@ -19,19 +19,20 @@ class InfTwitterClient
     end
   end
 
-  def dig_refresh
-  end
-
   ### request method ###
   def dig_search(q)
     reload_client
-    res = @client.search(
+    @client.search(
         q,
         exclude: 'retweets',       # RT排除
         result_type: 'recent',
-        count: 100,
+        count: 100
     )
-    res.take(18000)
+  end
+
+  def rate_limit_search_s
+    limit = rate_limit_search
+    "[#{limit[:remaining]}/#{limit[:remaining]}]"
   end
 
   def rate_limit_search

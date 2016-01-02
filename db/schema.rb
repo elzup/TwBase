@@ -20,9 +20,11 @@ ActiveRecord::Schema.define(version: 20151229080603) do
     t.float    "lat"
     t.float    "long"
     t.boolean  "for_sq"
-    t.string   "keyword"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "text_keyword"
+    t.string   "search_word"
+    t.datetime "tweeted_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "users", force: :cascade do |t|
