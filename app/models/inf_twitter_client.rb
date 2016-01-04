@@ -1,6 +1,6 @@
 class InfTwitterClient
   def initialize
-    setup_token(Rails.application.secrets.twitter['tokens'])
+    setup_app_token(Rails.application.secrets.twitter['aoa_keys'])
   end
 
   ### module ###
@@ -16,12 +16,26 @@ class InfTwitterClient
     @client = Twitter::REST::Client.new do |config|
       config.consumer_key = token.consumer_key
       config.consumer_secret = token.consumer_secret
-      config.access_token = token.token_key
-      config.access_token_secret = token.token_secret
     end
   end
 
   ### request method ###
+  def dig_search(q, old_tw)
+    reload_client
+    @client.search(
+        q,
+        exclude: 'retweets',       # RT排除
+        result_type: 'recent',
+        count: 100,
+        max_id: old_tw && old_tw.tweet_id
+    )
+  end
+
+  def rate_limit_search_s
+    limit = rate_limit_search
+    "[#{limit[:remaining]}/#{limit[:limit]}]"
+  end
+
   def rate_limit_search
     res = Twitter::REST::Request.new(@client, :get, '/1.1/application/rate_limit_status.json').perform
     res[:resources][:search][:'/search/tweets']
@@ -29,16 +43,12 @@ class InfTwitterClient
 
   private
   def print_client_info
-    unless @client.user_token?
-      puts 'Faild'
-      return
-    end
     search_limit = rate_limit_search
-    puts "@#{@client.user.screen_name} [#{search_limit[:remaining]}/#{search_limit[:limit]}]"
+    puts "OK [#{search_limit[:remaining]}/#{search_limit[:limit]}]"
   end
 
-  def setup_token(tokens_s)
-    @tokens = parse_token(tokens_s)
+  def setup_app_token(tokens_s)
+    @tokens = parse_app_token(tokens_s)
     @token_iterator = Enumerator.new do |y|
       while true
         @tokens.each do |token|
@@ -48,9 +58,9 @@ class InfTwitterClient
     end
   end
 
-  def parse_token(tokens_s)
-    tokens_s.split(':').each_slice(4).map do |ts|
-      TwitterToken.new(ts[0], ts[1], ts[2], ts[3])
+  def parse_app_token(tokens_s)
+    tokens_s.split(':').each_slice(2).map do |ts|
+      TwitterAppToken.new(ts[0], ts[1])
     end
   end
 
@@ -58,14 +68,12 @@ class InfTwitterClient
     @token_iterator.next
   end
 
-  class TwitterToken
-    attr_reader :consumer_key, :consumer_secret, :token_key, :token_secret
+  class TwitterAppToken
+    attr_reader :consumer_key, :consumer_secret
 
-    def initialize(consumer_key, consumer_secret, token_key, token_secret)
+    def initialize(consumer_key, consumer_secret)
       @consumer_key = consumer_key
       @consumer_secret = consumer_secret
-      @token_key = token_key
-      @token_secret = token_secret
     end
   end
 end
