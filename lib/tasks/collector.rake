@@ -14,7 +14,7 @@ namespace :collector do
       client.reload_client
       puts "#{client.rate_limit_search_s} >>"
       limit = client.rate_limit_search
-      res = client.dig_search(q, old_tw).take(limit[:remaining] * 100 - 2000)
+      res = client.dig_search(q, old_tw).take([0, limit[:remaining] * 100 - 2000].max)
       # res = client.dig_search(q, old_tw).take(180)
       if res.count == 0
         break
@@ -48,4 +48,8 @@ namespace :collector do
     end
   end
 
+  desc '日時別ツイート数'
+  task :counts_day, ['word'] => :environment do |task, args|
+    Tweet.day_count(args['word'])
+  end
 end
