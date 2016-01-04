@@ -21,7 +21,6 @@ class InfTwitterClient
 
   ### request method ###
   def dig_search(q, old_tw)
-    reload_client
     @client.search(
         q,
         exclude: 'retweets',       # RT排除
