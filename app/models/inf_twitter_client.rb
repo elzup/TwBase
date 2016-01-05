@@ -26,7 +26,7 @@ class InfTwitterClient
         exclude: 'retweets',       # RT排除
         result_type: 'recent',
         count: 100,
-        max_id: old_tw && old_tw.tweet_id
+        max_id: old_tw && old_tw.tweet_id.to_i - 1
     )
   end
 
@@ -37,7 +37,7 @@ class InfTwitterClient
         exclude: 'retweets',              # RT排除
         result_type: 'recent',
         count: 100,
-        max_id: old_tw && old_tw.tweet_id
+        max_id: old_tw && old_tw.tweet_id.to_i - 1
     )
   end
 
