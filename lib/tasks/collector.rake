@@ -13,8 +13,10 @@ namespace :collector do
       old_tw = Tweet.where(:search_word => q).order(:tweeted_at).first
       client.reload_client
       puts "#{client.rate_limit_search_s} >>"
-      limit = client.rate_limit_search
-      res = client.dig_search(q, old_tw).take([0, limit[:remaining] * 100 - 2000].max)
+      # よく規制かかるので API limit の半分
+      count = [0, client.rate_limit_search[:remaining] * 50].max
+      # count = 50
+      res = client.dig_search(q, old_tw).take(count)
       # res = client.dig_search(q, old_tw).take(180)
       if res.count == 0
         break
@@ -23,14 +25,10 @@ namespace :collector do
       res.each_slice(1000).with_index do |tws, i|
         tws.each do |tw|
           # regist user
-          user = User.find_or_create_by(
-              tid: tw.user.id,
-              screen_name: tw.user.screen_name
-          )
-          # regist tweet
-          if Tweet.find_by_tweet_id(tw.id)
-            next
+          user = User.find_or_create_by(tid: tw.user.id) do |user|
+              user.screen_name = tw.user.screen_name
           end
+          # regist tweet
           tweets << Tweet.new(
               user_id: user.id,
               tweet_id: tw.id,
@@ -40,7 +38,7 @@ namespace :collector do
           )
         end
         Tweet.import tweets
-        puts "#{i}: #{tw.created_at}"
+        puts "#{i}: #{tweets.last.tweeted_at}"
       end
       puts "get #{res.count} tweet"
       puts ">> #{client.rate_limit_search_s}"
