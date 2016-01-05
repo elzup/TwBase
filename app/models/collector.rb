@@ -6,18 +6,17 @@ class Collector
   def inf_get(word)
     while 1
       old_tw = Tweet.where(:search_word => word).order(:tweeted_at).first
-      client.reload_client
-      puts "#{client.rate_limit_search_s} >>"
+      @client.reload_client
+      puts "#{@client.rate_limit_search_s} >>"
       # よく規制かかるので API limit の半分
-      count = [0, client.rate_limit_search[:remaining] * 50].max
+      count = [0, @client.rate_limit_search[:remaining] * 50].max
       # count = 50
-      res = client.dig_search(word, old_tw).take(count)
-      # res = client.dig_search(word, old_tw).take(180)
+      res = @client.dig_search(word, old_tw).take(count)
       if res.count == 0
         break
       end
-      tweets = []
       res.each_slice(1000).with_index do |tws, i|
+        tweets = []
         tws.each do |tw|
           # regist user
           user = User.find_or_create_by(tid: tw.user.id) do |user|
@@ -36,7 +35,7 @@ class Collector
         puts "#{i}: #{tweets.last.tweeted_at}"
       end
       puts "get #{res.count} tweet"
-      puts ">> #{client.rate_limit_search_s}"
+      puts ">> #{@client.rate_limit_search_s}"
     end
   end
 end
