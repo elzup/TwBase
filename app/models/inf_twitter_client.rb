@@ -30,6 +30,17 @@ class InfTwitterClient
     )
   end
 
+  def geo_search(lat, long, r, old_tw)
+    @client.search(
+        '',
+        geocode: "#{lat},#{long},#{r}",
+        exclude: 'retweets',              # RT排除
+        result_type: 'recent',
+        count: 100,
+        max_id: old_tw && old_tw.tweet_id
+    )
+  end
+
   def rate_limit_search_s
     limit = rate_limit_search
     "[#{limit[:remaining]}/#{limit[:limit]}]"
