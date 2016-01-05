@@ -17,9 +17,9 @@
 #
 # Indexes
 #
-#  index_tweets_on_created_at  (created_at)
-#  index_tweets_on_tweeted_at  (tweeted_at)
-#  index_tweets_on_user_id     (user_id)
+#  index_tweets_on_search_word  (search_word)
+#  index_tweets_on_tweeted_at   (tweeted_at)
+#  index_tweets_on_user_id      (user_id)
 #
 
 class Tweet < ActiveRecord::Base
