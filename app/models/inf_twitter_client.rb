@@ -26,7 +26,18 @@ class InfTwitterClient
         exclude: 'retweets',       # RT排除
         result_type: 'recent',
         count: 100,
-        max_id: old_tw && old_tw.tweet_id
+        max_id: old_tw && old_tw.tweet_id.to_i - 1
+    )
+  end
+
+  def geo_search(lat, long, r, old_tw)
+    @client.search(
+        '',
+        geocode: "#{lat},#{long},#{r}",
+        exclude: 'retweets',              # RT排除
+        result_type: 'recent',
+        count: 100,
+        max_id: old_tw && old_tw.tweet_id.to_i - 1
     )
   end
 

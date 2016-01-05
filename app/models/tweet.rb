@@ -17,9 +17,9 @@
 #
 # Indexes
 #
-#  index_tweets_on_created_at  (created_at)
-#  index_tweets_on_tweeted_at  (tweeted_at)
-#  index_tweets_on_user_id     (user_id)
+#  index_tweets_on_search_word  (search_word)
+#  index_tweets_on_tweeted_at   (tweeted_at)
+#  index_tweets_on_user_id      (user_id)
 #
 
 class Tweet < ActiveRecord::Base
@@ -29,13 +29,24 @@ class Tweet < ActiveRecord::Base
     Tweet.order(:tweeted_at).first
   end
 
-  def self.day_count(word)
-    tweets = Tweet.where(search_word: word).order(:tweeted_at)
+  def self.day_count
+    tweets = Tweet.order(:tweeted_at)
     start_time = tweets.first.tweeted_at
     last_time = tweets.last.tweeted_at
     (start_time.to_date..last_time.to_date).map do |date|
-      count = Tweet.where(tweeted_at: date.beginning_of_day..date.end_of_day).size
+      count = Tweet.where(tweeted_at: date.beginning_of_day..date.end_of_day).count
       [date, count]
+    end.to_h
+  end
+
+  def self.hour_count
+    tweets = Tweet.order(:tweeted_at)
+    start_time = tweets.first.tweeted_at
+    last_time = tweets.last.tweeted_at
+    (start_time.to_date..last_time.to_date).map do |date|
+      [date, (0...24).map do |h|
+        tweets.where(tweeted_at: (date + h.hour)...(date + h.hour + 1.hour)).count
+      end]
     end.to_h
   end
 end
