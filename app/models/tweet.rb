@@ -33,9 +33,9 @@ class Tweet < ActiveRecord::Base
     tweets = Tweet.where(search_word: word).order(:tweeted_at)
     start_time = tweets.first.tweeted_at
     last_time = tweets.last.tweeted_at
-    (start_time.to_date..last_time.to_date).each do |date|
+    (start_time.to_date..last_time.to_date).map do |date|
       count = Tweet.where(tweeted_at: date.beginning_of_day..date.end_of_day).size
-      puts "#{date} - #{count} tweets"
-    end
+      [date, count]
+    end.to_h
   end
 end
