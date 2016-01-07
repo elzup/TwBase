@@ -44,4 +44,15 @@ namespace :collector do
     end
     # end
   end
+
+  desc '日時別ツイート数詳細 geo'
+  task :counts_hour_geo => :environment do
+    Tweet.hour_count_geo.each do |date, counts|
+      puts " [#{date}]"
+      counts.each_with_index do |count, h|
+        puts ('%02d: %8d' % [h, count]) + '=' * [Math.log2(count), 0].max.to_i
+      end
+    end
+    # end
+  end
 end
