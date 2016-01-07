@@ -21,6 +21,12 @@ namespace :collector do
     collector.inf_get_geo(lat, long, r)
   end
 
+  desc 'foursquare ツイート取得'
+  task search_4sq: :environment do
+    collector = Collector.new
+    collector.inf_4sq
+  end
+
   desc '日時別ツイート数'
   task :counts_day => :environment do
     Tweet.day_count.each do |date, count|
