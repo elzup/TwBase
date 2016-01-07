@@ -41,6 +41,17 @@ class InfTwitterClient
     )
   end
 
+  def search_4sq(old_tw)
+    @client.search(
+        'swarmapp.com/c/',
+        exclude: 'retweets',       # RT排除
+        result_type: 'recent',
+        filter: 'links',
+        count: 100,
+        max_id: old_tw && old_tw.tweet_id.to_i - 1
+    )
+  end
+
   def rate_limit_search_s
     limit = rate_limit_search
     "[#{limit[:remaining]}/#{limit[:limit]}]"
