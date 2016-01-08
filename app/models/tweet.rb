@@ -25,8 +25,38 @@
 class Tweet < ActiveRecord::Base
   belongs_to :user
 
-  def self.oldest_tweet
-    Tweet.order(:tweeted_at).first
+  scope :geo, -> { where.not(lat: nil) }
+  scope :oldest, -> { order(:tweeted_at).first }
+
+  def self.new_4sq(user, tw)
+    Tweet.new(
+        user_id: user.id,
+        tweet_id: tw.id,
+        text: tw.text,
+        search_word: '4sq',
+        tweeted_at: tw.created_at
+    )
+  end
+
+  def self.new_geo(user, tw)
+    Tweet.new(
+        tweet_id: tw.id,
+        user_id: user.id,
+        text: tw.text,
+        tweeted_at: tw.created_at,
+        lat: tw.geo.lat,
+        long: tw.geo.long
+    )
+  end
+
+  def self.new_tw(user, tw, word)
+    Tweet.new(
+        user_id: user.id,
+        tweet_id: tw.id,
+        text: tw.text,
+        search_word: word,
+        tweeted_at: tw.created_at
+    )
   end
 
   def self.day_count
@@ -52,5 +82,9 @@ class Tweet < ActiveRecord::Base
 
   def self.hour_count_geo
     hour_count('lat IS NOT NULL')
+  end
+
+  def self.hour_count_word(word)
+    hour_count(search_word: word)
   end
 end

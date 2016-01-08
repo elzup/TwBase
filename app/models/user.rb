@@ -15,4 +15,10 @@
 
 class User < ActiveRecord::Base
   has_many :tweets, :dependent => :delete_all
+
+  def regist(tid, screen_name)
+    find_or_create_by(tid: tid) do |user|
+      user.screen_name = screen_name
+    end
+  end
 end

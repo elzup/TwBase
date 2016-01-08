@@ -52,6 +52,11 @@ class InfTwitterClient
     )
   end
 
+  def dig_limit
+    # よく規制かかるので API limit の半分
+    [0, @client.rate_limit_search[:remaining] * 50].max
+  end
+
   def rate_limit_search_s
     limit = rate_limit_search
     "[#{limit[:remaining]}/#{limit[:limit]}]"
