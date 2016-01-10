@@ -27,6 +27,12 @@ namespace :collector do
     collector.inf_4sq
   end
 
+  desc 'Look each first, last'
+  task :data_term => :environment do
+    collector = Collector.new
+    collector.print_data_points
+  end
+
   desc '日別ツイート数'
   task :counts_day => :environment do
     Tweet.day_count.each do |date, count|

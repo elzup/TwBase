@@ -3,6 +3,15 @@ class Collector
     @client = InfTwitterClient.new
   end
 
+  def print_data_points
+    terms = Tweet.data_terms_all
+    terms.each do |key, values|
+      first, last = values
+      puts key
+      puts "#{first.tweeted_at} -> #{last.tweeted_at}\n"
+    end
+  end
+
   def print_graph_all
     print_graph(Tweet.hour_count)
   end
@@ -30,7 +39,6 @@ class Collector
         puts ('%02d: %8d' % [h, count]) + '=' * [Math.log2(count), 0].max.to_i
       end
     end
-    # end
   end
 
   def inf_get(word)

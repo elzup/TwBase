@@ -26,6 +26,8 @@ class Tweet < ActiveRecord::Base
   belongs_to :user
 
   scope :geo, -> { where.not(lat: nil) }
+  scope :forsq, -> { where(search_word: '4sq') }
+  scope :going, -> { where(search_word: '行く') }
   scope :oldest, -> { order(:tweeted_at).first }
 
   def self.new_4sq(user, tw)
@@ -86,5 +88,14 @@ class Tweet < ActiveRecord::Base
 
   def self.hour_count_word(word)
     hour_count(search_word: word)
+  end
+
+  def self.data_terms_all
+    tweets = Tweet.order(:tweeted_at)
+    {
+        'geo' => [tweets.geo.first, tweets.geo.last],
+        '4sq' => [tweets.forsq.first, tweets.geo.last],
+        'going' => [tweets.going.first, tweets.going.last]
+    }
   end
 end
