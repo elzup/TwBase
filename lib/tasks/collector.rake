@@ -27,21 +27,40 @@ namespace :collector do
     collector.inf_4sq
   end
 
-  desc '日時別ツイート数'
+  desc 'Look each first, last'
+  task :data_term => :environment do
+    collector = Collector.new
+    collector.print_data_points
+  end
+
+  desc '日別ツイート数'
   task :counts_day => :environment do
     Tweet.day_count.each do |date, count|
       puts "#{date} - #{count} tweets"
     end
   end
 
-  desc '日時別ツイート数詳細'
-  task :counts_hour => :environment do
-    Tweet.hour_count.each do |date, counts|
-      puts " [#{date}]"
-      counts.each_with_index do |count, h|
-        puts ('%02d: %8d' % [h, count]) + '=' * [Math.log2(count), 0].max.to_i
-      end
-    end
-    # end
+  desc '時間別ツイート数 all'
+  task :counts_hour_all => :environment do
+    collector = Collector.new
+    collector.print_graph_all
+  end
+
+  desc '時間別ツイート数 going'
+  task :counts_hour_going => :environment do
+    collector = Collector.new
+    collector.print_graph_going
+  end
+
+  desc '時間別ツイート数 geo'
+  task :counts_hour_geo => :environment do
+    collector = Collector.new
+    collector.print_graph_geo
+  end
+
+  desc '時間別ツイート数 4sq'
+  task :counts_hour_geo => :environment do
+    collector = Collector.new
+    collector.print_graph_4sq
   end
 end
