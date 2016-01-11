@@ -11,6 +11,7 @@ class Parser
 
   def self.go_targets(tree)
     go_chunk = Parser.go_chunk(tree)
+    return nil unless go_chunk
     Parser.linked_chunks(tree, go_chunk).each do |chunk|
       if Parser.target_chunk?(tree, chunk)
         return Parser.linked_chunks(tree, chunk).map do |target_link_chunk|
