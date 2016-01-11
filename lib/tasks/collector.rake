@@ -64,31 +64,4 @@ namespace :collector do
     collector.print_graph_4sq
   end
 
-  desc '行くの係り受け解析'
-  task :parse_going => :environment do
-    text = '今からコミケの会場に行くわ'
-    parser = CaboCha::Parser.new
-    tree = parser.parse(text)
-
-    (0 ... tree.chunk_size).each do |i|
-      chunk = tree.chunk(i)
-
-      # linkが繋がっていれば
-      if (chunk.link >= 0)
-        # リンク元と
-        chunk_from = (0 ... chunk.token_size).map do |j|
-          tree.token(chunk.token_pos + j).normalized_surface
-        end.join("-")
-
-        # リンク先を
-        chunk = tree.chunk(chunk.link)
-        chunk_to = (0 ... chunk.token_size).map do |j|
-          tree.token(chunk.token_pos + j).normalized_surface
-        end.join("-")
-
-        # 表示
-        puts "#{chunk_from} => #{chunk_to}"
-      end
-    end
-  end
 end
