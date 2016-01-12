@@ -29,6 +29,8 @@ gem 'dotenv-rails'
 gem 'twitter'
 gem 'activerecord-import'
 
+gem 'cabocha'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

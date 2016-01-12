@@ -63,4 +63,5 @@ namespace :collector do
     collector = Collector.new
     collector.print_graph_4sq
   end
+
 end
