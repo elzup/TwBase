@@ -14,9 +14,9 @@ class Parser
     return nil unless go_chunk
     Parser.linked_chunks(tree, go_chunk).each do |chunk|
       if Parser.target_chunk?(tree, chunk)
-        return Parser.linked_chunks(tree, chunk).map do |target_link_chunk|
+        return (Parser.linked_chunks(tree, chunk).map do |target_link_chunk|
           Parser.chunk_surface(tree, target_link_chunk)
-        end.join + Parser.chunk_head_surface(tree, chunk)
+        end.join + Parser.chunk_head_surface(tree, chunk)).strip
       end
     end
     return nil
@@ -39,7 +39,9 @@ class Parser
   end
 
   def self.target_chunk?(tree, chunk)
-    %w(に へ).include?(Parser.enc(tree.token(chunk.token_pos + chunk.token_size - 1).surface))
+    Parser.enc(tree.token(chunk.token_pos).feature_list(0)) == '名詞' &&
+        chunk.token_size == 1 ||
+        %w(に へ).include?(Parser.enc(tree.token(chunk.token_pos + chunk.func_pos).surface))
   end
 
   def self.enc(s)
